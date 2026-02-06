@@ -311,6 +311,9 @@ Partial Public Class ThisAddIn
     Public StartupInitialized As Boolean = False
     Private WithEvents wordApp As Word.Application
 
+    ' Clerk authentication manager (initialized during startup if Clerk is configured)
+    Private Shared _authManager As ClerkAuthManager
+
     ' UI threading context and scheduler (captured at Startup)
     Private Shared _uiContext As SynchronizationContext
     Private Shared _uiScheduler As TaskScheduler
@@ -473,7 +476,119 @@ Partial Public Class ThisAddIn
         InitializeConfig(True, True)
         AddContextMenu()
         UpdateHandler.PeriodicCheckForUpdates(INI_UpdateCheckInterval, RDV, INI_UpdatePath, _context)
+        InitializeClerkAuth()
     End Sub
+
+    ''' <summary>
+    ''' Initializes Clerk authentication from cached tokens if Clerk is configured in the INI.
+    ''' Non-blocking — does not prompt the user if no token is cached.
+    ''' </summary>
+    Private Sub InitializeClerkAuth()
+        Try
+            ' Only initialize if Clerk is configured
+            If String.IsNullOrWhiteSpace(_context.INI_ClerkPublishableKey) OrElse
+               String.IsNullOrWhiteSpace(_context.INI_ClerkSecretKey) Then
+                Return
+            End If
+
+            Dim tokenStore = CreateTokenStore()
+            _authManager = New ClerkAuthManager(
+                _context,
+                tokenStore,
+                AddressOf ShowClerkSignInDialog
+            )
+
+            ' Initialize from cached token (fire and forget, non-blocking)
+            Task.Run(Async Function()
+                         Try
+                             Await _authManager.InitializeAsync()
+                         Catch
+                             ' Auth init failure is non-fatal
+                         End Try
+                     End Function)
+        Catch
+            ' Auth initialization failure is non-fatal
+        End Try
+    End Sub
+
+    ''' <summary>
+    ''' Creates a token store wired to My.Settings for persistence.
+    ''' </summary>
+    Friend Shared Function CreateTokenStore() As ClerkTokenStore
+        Return New ClerkTokenStore(
+            Sub(data)
+                ' Save
+                My.Settings.Auth_EncryptedToken = data.EncryptedToken
+                My.Settings.Auth_UserId = data.UserId
+                My.Settings.Auth_UserEmail = data.UserEmail
+                My.Settings.Auth_UserName = data.UserName
+                My.Settings.Auth_SessionId = data.SessionId
+                My.Settings.Auth_TokenExpiry = data.TokenExpiry
+                My.Settings.Save()
+            End Sub,
+            Function()
+                ' Load
+                Return New ClerkTokenStore.StoredAuthData() With {
+                    .EncryptedToken = My.Settings.Auth_EncryptedToken,
+                    .UserId = My.Settings.Auth_UserId,
+                    .UserEmail = My.Settings.Auth_UserEmail,
+                    .UserName = My.Settings.Auth_UserName,
+                    .SessionId = My.Settings.Auth_SessionId,
+                    .TokenExpiry = My.Settings.Auth_TokenExpiry
+                }
+            End Function,
+            Sub()
+                ' Clear
+                My.Settings.Auth_EncryptedToken = ""
+                My.Settings.Auth_UserId = ""
+                My.Settings.Auth_UserEmail = ""
+                My.Settings.Auth_UserName = ""
+                My.Settings.Auth_SessionId = ""
+                My.Settings.Auth_TokenExpiry = 0
+                My.Settings.Save()
+            End Sub
+        )
+    End Function
+
+    ''' <summary>
+    ''' Callback for the auth manager to show the Clerk sign-in dialog.
+    ''' Must be called on the UI thread.
+    ''' </summary>
+    Private Shared Function ShowClerkSignInDialog(publishableKey As String, clerkDomain As String) As ClerkSignInResult
+        Return ClerkSignInDialog.ShowSignIn(publishableKey, clerkDomain)
+    End Function
+
+    ''' <summary>
+    ''' Public entry point for sign-in (called from Ribbon).
+    ''' </summary>
+    Public Async Sub ClerkSignIn()
+        If _authManager Is Nothing Then
+            SharedMethods.ShowCustomMessageBox("Clerk authentication is not configured. Please add ClerkPublishableKey, ClerkSecretKey, and ClerkDomain to your configuration file.")
+            Return
+        End If
+
+        Dim success = Await _authManager.SignInAsync()
+        If success Then
+            SharedMethods.ShowCustomMessageBox($"Signed in as {_authManager.CurrentUserName}.")
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Public entry point for sign-out (called from Ribbon).
+    ''' </summary>
+    Public Sub ClerkSignOut()
+        If _authManager Is Nothing Then Return
+        _authManager.SignOut()
+    End Sub
+
+    ''' <summary>
+    ''' Returns the auth manager instance (used by Ribbon for state queries).
+    ''' </summary>
+    Public Shared ReadOnly Property AuthManager As ClerkAuthManager
+        Get
+            Return _authManager
+        End Get
+    End Property
 
 
     ' Bridge to SharedLibrary

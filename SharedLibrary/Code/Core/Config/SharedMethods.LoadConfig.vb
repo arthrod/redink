@@ -400,6 +400,11 @@ Namespace SharedLibrary
                     End If
                 End If
 
+                ' Process Clerk authentication configuration (optional).
+                context.INI_ClerkPublishableKey = If(configDict.ContainsKey("ClerkPublishableKey"), configDict("ClerkPublishableKey"), "")
+                context.INI_ClerkSecretKey = If(configDict.ContainsKey("ClerkSecretKey"), configDict("ClerkSecretKey"), "")
+                context.INI_ClerkDomain = If(configDict.ContainsKey("ClerkDomain"), configDict("ClerkDomain"), "")
+
                 ' Set runtime ignore prompt based on INI_Ignore. Same with Location.
                 If context.INI_Ignore Then context.Ignore = context.SP_Ignore Else context.Ignore = ""
                 context.Location = context.INI_Location.Trim()

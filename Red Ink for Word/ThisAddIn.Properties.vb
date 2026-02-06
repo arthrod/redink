@@ -2343,4 +2343,88 @@ Partial Public Class ThisAddIn
         End If
         Return Original
     End Function
+
+    ' ── Clerk Authentication bridge properties ──
+
+    Public Shared Property Auth_IsAuthenticated As Boolean
+        Get
+            Return _context.Auth_IsAuthenticated
+        End Get
+        Set(value As Boolean)
+            _context.Auth_IsAuthenticated = value
+        End Set
+    End Property
+
+    Public Shared Property Auth_UserId As String
+        Get
+            Return _context.Auth_UserId
+        End Get
+        Set(value As String)
+            _context.Auth_UserId = value
+        End Set
+    End Property
+
+    Public Shared Property Auth_UserEmail As String
+        Get
+            Return _context.Auth_UserEmail
+        End Get
+        Set(value As String)
+            _context.Auth_UserEmail = value
+        End Set
+    End Property
+
+    Public Shared Property Auth_UserName As String
+        Get
+            Return _context.Auth_UserName
+        End Get
+        Set(value As String)
+            _context.Auth_UserName = value
+        End Set
+    End Property
+
+    Public Shared Property Auth_SessionToken As String
+        Get
+            Return _context.Auth_SessionToken
+        End Get
+        Set(value As String)
+            _context.Auth_SessionToken = value
+        End Set
+    End Property
+
+    Public Shared Property Auth_TokenExpiry As Long
+        Get
+            Return _context.Auth_TokenExpiry
+        End Get
+        Set(value As Long)
+            _context.Auth_TokenExpiry = value
+        End Set
+    End Property
+
+    Public Shared Property INI_ClerkPublishableKey As String
+        Get
+            Return _context.INI_ClerkPublishableKey
+        End Get
+        Set(value As String)
+            _context.INI_ClerkPublishableKey = value
+        End Set
+    End Property
+
+    Public Shared Property INI_ClerkSecretKey As String
+        Get
+            Return _context.INI_ClerkSecretKey
+        End Get
+        Set(value As String)
+            _context.INI_ClerkSecretKey = value
+        End Set
+    End Property
+
+    Public Shared Property INI_ClerkDomain As String
+        Get
+            Return _context.INI_ClerkDomain
+        End Get
+        Set(value As String)
+            _context.INI_ClerkDomain = value
+        End Set
+    End Property
+
 End Class

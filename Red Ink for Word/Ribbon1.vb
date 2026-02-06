@@ -400,4 +400,40 @@ Public Class Ribbon1
         SharedLogger.Log(ThisAddIn._context, ThisAddIn._context.RDV, "RI_Charting_Click invoked")
         Globals.ThisAddIn.OpenExistingDrawioFileForEditing()
     End Sub
+
+    Private Sub RI_ClerkAuth_Click(sender As Object, e As RibbonControlEventArgs)
+        SharedLogger.Log(ThisAddIn._context, ThisAddIn._context.RDV, "RI_ClerkAuth_Click invoked")
+        If ThisAddIn.Auth_IsAuthenticated Then
+            Dim result = MessageBox.Show(
+                $"Signed in as {ThisAddIn.Auth_UserName}.{vbCrLf}{vbCrLf}Do you want to sign out?",
+                "Red Ink — Account",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+            If result = DialogResult.Yes Then
+                Globals.ThisAddIn.ClerkSignOut()
+                UpdateAuthButtonLabel()
+            End If
+        Else
+            Globals.ThisAddIn.ClerkSignIn()
+            UpdateAuthButtonLabel()
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Updates the Sign In / Sign Out button label and tooltip based on current auth state.
+    ''' </summary>
+    Friend Sub UpdateAuthButtonLabel()
+        Try
+            If ThisAddIn.Auth_IsAuthenticated Then
+                Dim displayName = ThisAddIn.Auth_UserName
+                If String.IsNullOrWhiteSpace(displayName) Then displayName = ThisAddIn.Auth_UserEmail
+                If String.IsNullOrWhiteSpace(displayName) Then displayName = "User"
+                Me.RI_ClerkAuth.Label = "Sign Out"
+                Me.RI_ClerkAuth.ScreenTip = $"Signed in as {displayName}. Click to sign out."
+            Else
+                Me.RI_ClerkAuth.Label = "Sign In"
+                Me.RI_ClerkAuth.ScreenTip = "Sign in to your account"
+            End If
+        Catch
+        End Try
+    End Sub
 End Class

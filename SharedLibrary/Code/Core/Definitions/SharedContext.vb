@@ -310,6 +310,16 @@ Namespace SharedLibrary
             Property INI_LogoPath As String
             Property INI_BrandingName As String
 
+            ' Clerk Authentication
+            Property Auth_IsAuthenticated As Boolean
+            Property Auth_UserId As String
+            Property Auth_UserEmail As String
+            Property Auth_UserName As String
+            Property Auth_SessionToken As String
+            Property Auth_TokenExpiry As Long
+            Property INI_ClerkPublishableKey As String
+            Property INI_ClerkSecretKey As String
+            Property INI_ClerkDomain As String
 
         End Interface
 
@@ -582,6 +592,16 @@ Namespace SharedLibrary
         Public Property INI_LogoPath As String Implements ISharedContext.INI_LogoPath
         Public Property INI_BrandingName As String Implements ISharedContext.INI_BrandingName
 
+        ' Clerk Authentication
+        Public Property Auth_IsAuthenticated As Boolean Implements ISharedContext.Auth_IsAuthenticated
+        Public Property Auth_UserId As String Implements ISharedContext.Auth_UserId
+        Public Property Auth_UserEmail As String Implements ISharedContext.Auth_UserEmail
+        Public Property Auth_UserName As String Implements ISharedContext.Auth_UserName
+        Public Property Auth_SessionToken As String Implements ISharedContext.Auth_SessionToken
+        Public Property Auth_TokenExpiry As Long Implements ISharedContext.Auth_TokenExpiry
+        Public Property INI_ClerkPublishableKey As String Implements ISharedContext.INI_ClerkPublishableKey
+        Public Property INI_ClerkSecretKey As String Implements ISharedContext.INI_ClerkSecretKey
+        Public Property INI_ClerkDomain As String Implements ISharedContext.INI_ClerkDomain
 
     End Class
 End Namespace

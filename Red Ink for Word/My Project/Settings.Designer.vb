@@ -1084,6 +1084,78 @@ Namespace My
                 Me("ChatShowToolingLog") = value
             End Set
         End Property
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property Auth_EncryptedToken() As String
+            Get
+                Return CType(Me("Auth_EncryptedToken"),String)
+            End Get
+            Set
+                Me("Auth_EncryptedToken") = value
+            End Set
+        End Property
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property Auth_UserId() As String
+            Get
+                Return CType(Me("Auth_UserId"),String)
+            End Get
+            Set
+                Me("Auth_UserId") = value
+            End Set
+        End Property
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property Auth_UserEmail() As String
+            Get
+                Return CType(Me("Auth_UserEmail"),String)
+            End Get
+            Set
+                Me("Auth_UserEmail") = value
+            End Set
+        End Property
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property Auth_UserName() As String
+            Get
+                Return CType(Me("Auth_UserName"),String)
+            End Get
+            Set
+                Me("Auth_UserName") = value
+            End Set
+        End Property
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property Auth_SessionId() As String
+            Get
+                Return CType(Me("Auth_SessionId"),String)
+            End Get
+            Set
+                Me("Auth_SessionId") = value
+            End Set
+        End Property
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
+        Public Property Auth_TokenExpiry() As Long
+            Get
+                Return CType(Me("Auth_TokenExpiry"),Long)
+            End Get
+            Set
+                Me("Auth_TokenExpiry") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

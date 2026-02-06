@@ -119,6 +119,7 @@ Partial Class Ribbon1
         Me.RI_InsertClipboard = Me.Factory.CreateRibbonButton
         Me.RI_Transcriptor = Me.Factory.CreateRibbonButton
         Me.RI_HelpMe = Me.Factory.CreateRibbonButton
+        Me.RI_ClerkAuth = Me.Factory.CreateRibbonButton
         Me.Settings = Me.Factory.CreateRibbonButton
         Me.Group2 = Me.Factory.CreateRibbonGroup
         Me.RI_PrimLang2 = Me.Factory.CreateRibbonButton
@@ -167,6 +168,7 @@ Partial Class Ribbon1
         Me.Menu1.Items.Add(Me.Menu2)
         Me.Menu1.Items.Add(Me.RI_Transcriptor)
         Me.Menu1.Items.Add(Me.RI_HelpMe)
+        Me.Menu1.Items.Add(Me.RI_ClerkAuth)
         Me.Menu1.Items.Add(Me.Settings)
         Me.Menu1.KeyTip = "RI"
         Me.Menu1.Label = "Task"
@@ -744,6 +746,14 @@ Partial Class Ribbon1
         Me.RI_HelpMe.ScreenTip = "This will call up a chatbot that answers your questions about Red Ink"
         Me.RI_HelpMe.ShowImage = True
         '
+        'RI_ClerkAuth
+        '
+        Me.RI_ClerkAuth.Label = "Sign In"
+        Me.RI_ClerkAuth.Name = "RI_ClerkAuth"
+        Me.RI_ClerkAuth.OfficeImageId = "ContactPictureMenu"
+        Me.RI_ClerkAuth.ScreenTip = "Sign in or sign out of your account"
+        Me.RI_ClerkAuth.ShowImage = True
+        '
         'Settings
         '
         Me.Settings.Label = "Settings"
@@ -844,6 +854,7 @@ Partial Class Ribbon1
         AddHandler RI_Convincing.Click, AddressOf RI_Convincing_Click
         AddHandler RI_SpecialModel.Click, AddressOf RI_SpecialModel_Click
         AddHandler RI_Anonymization.Click, AddressOf RI_Anonymization_Click
+        AddHandler RI_ClerkAuth.Click, AddressOf RI_ClerkAuth_Click
         AddHandler Group2.DialogLauncherClick, AddressOf Easteregg_Click
 
     End Sub
@@ -989,6 +1000,15 @@ Partial Class Ribbon1
             BrandedVersion = " - Branded for " & BrandedVersion & " "
         End If
 
+        ' Clerk Auth button: visible only if Clerk is configured
+        If String.IsNullOrWhiteSpace(ThisAddIn.INI_ClerkPublishableKey) OrElse
+           String.IsNullOrWhiteSpace(ThisAddIn.INI_ClerkSecretKey) Then
+            Me.RI_ClerkAuth.Visible = False
+        Else
+            Me.RI_ClerkAuth.Visible = True
+            UpdateAuthButtonLabel()
+        End If
+
         Me.Menu1.ScreenTip = If(String.IsNullOrEmpty(ThisAddIn.INI_UsageRestrictions), "",
                             ThisAddIn.INI_UsageRestrictions)
         Me.Menu1.SuperTip = $"{AN} " & ThisAddIn.Version & BrandedVersion &
@@ -1051,6 +1071,7 @@ Partial Class Ribbon1
     Friend WithEvents RI_FindHidden As RibbonButton
     Friend WithEvents RI_ContentControls As RibbonButton
     Friend WithEvents RI_HelpMe As RibbonButton
+    Friend WithEvents RI_ClerkAuth As RibbonButton
     Friend WithEvents Menu5 As RibbonMenu
     Friend WithEvents RI_PrepareRedactions As RibbonButton
     Friend WithEvents RI_FinalizeRedactions As RibbonButton
