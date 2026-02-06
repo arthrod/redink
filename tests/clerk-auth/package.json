@@ -3,17 +3,21 @@
   "version": "1.0.0",
   "description": "Integration and E2E tests for Red Ink Clerk authentication",
   "scripts": {
-    "test": "node --test tests/*.test.mjs",
+    "test": "node --test tests/unit.test.mjs tests/clerk-api-mock.test.mjs tests/clerk-e2e-mock.test.mjs",
     "test:unit": "node --test tests/unit.test.mjs",
     "test:api": "node --test tests/clerk-api.test.mjs",
+    "test:api:mock": "node --test tests/clerk-api-mock.test.mjs",
     "test:e2e": "npx playwright test",
-    "test:e2e:install": "npx playwright install chromium"
+    "test:e2e:mock": "npx playwright test e2e/clerk-signin-mock.spec.mjs",
+    "test:e2e:install": "npx playwright install chromium",
+    "test:mock": "node --test tests/unit.test.mjs tests/clerk-api-mock.test.mjs tests/clerk-e2e-mock.test.mjs",
+    "test:offline": "node --test tests/unit.test.mjs tests/clerk-api-mock.test.mjs tests/clerk-e2e-mock.test.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@clerk/testing": "^1.13.35",
-    "@playwright/test": "^1.58.1"
+    "@playwright/test": "^1.56.0"
   }
 }
